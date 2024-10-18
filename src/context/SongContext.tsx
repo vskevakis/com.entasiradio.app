@@ -7,6 +7,7 @@ import {
     useCallback,
   } from "react";
   import { useNotificationService } from "@/hooks/useNotificationService";
+  import { CapacitorMusicControls } from "capacitor-music-controls-plugin";
   
   interface Song {
     name: string;
@@ -37,10 +38,152 @@ import {
     const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
     const previousSongRef = useRef<Song | null>(null);
   
+    // Function to handle media control events
+    const handleControlsEvent = (message: string) => {
+      console.log("Handling media control event:", message);
+  
+      switch (message) {
+        case "music-controls-pause":
+          if (audio && isPlaying) {
+            audio.pause();
+            setIsPlaying(false);
+            CapacitorMusicControls.updateIsPlaying({
+                isPlaying: false,
+              });
+          }
+          break;
+        case "music-controls-play":
+          if (audio && !isPlaying) {
+            audio.play();
+            setIsPlaying(true);
+            CapacitorMusicControls.updateIsPlaying({
+                isPlaying: true,
+              });
+          }
+          break;
+        case "music-controls-destroy":
+          cancelNotification();
+          CapacitorMusicControls.destroy();
+          break;
+        default:
+          console.warn("Unknown media control action:", message);
+          break;
+      }
+    };
+  
+    // Setup the music controls with actions
+    const updateMusicControls = useCallback(
+      (song: Song) => {
+        CapacitorMusicControls.create({
+          track: song.name,
+          artist: song.artists,
+          cover: song.image,
+          isPlaying,
+          dismissable: true,
+          hasPrev: false,
+          hasNext: false,
+          hasClose: true,
+          playIcon: "media_play",
+          pauseIcon: "media_pause",
+          notificationIcon: "notification",
+        });
+  
+        // iOS event listener
+        CapacitorMusicControls.addListener(
+          "controlsNotification",
+          (info: { message: string }) => {
+            handleControlsEvent(info.message);
+          }
+        );
+      },
+      [isPlaying, handleControlsEvent]
+    );
+  
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    useEffect(() => {
+      console.log("Registering Android media control listener...");
+  
+      document.addEventListener("controlsNotification", (event: Event) => {
+        console.log("Android media control event received:", event);
+  
+        // Extract the message directly from the event object
+        const message = (event as any).message;
+  
+        if (message) {
+          console.log(
+            "Valid message received from Android media control event:",
+            message
+          );
+          handleControlsEvent(message);
+        } else {
+          console.warn(
+            "No valid message received from Android media control event"
+          );
+        }
+      });
+  
+      // Cleanup the event listener on unmount
+      return () => {
+        document.removeEventListener("controlsNotification", () => {});
+      };
+    }, [handleControlsEvent]);
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+  
+    // Play or pause audio and update Music Controls
+    const togglePlay = useCallback(() => {
+      if (audio) {
+        if (isPlaying) {
+          audio.pause();
+          setIsPlaying(false);
+          cancelNotification();
+  
+          CapacitorMusicControls.updateIsPlaying({
+            isPlaying: false,
+          });
+        } else {
+          audio.play().catch((err) => {
+            console.error("Playback failed:", err);
+          });
+          setIsPlaying(true);
+  
+          if (currentSong) {
+            updateNotificationWithImage(
+              currentSong.name,
+              currentSong.artists,
+              currentSong.album,
+              currentSong.image
+            );
+            updateMusicControls(currentSong);
+          }
+  
+          CapacitorMusicControls.updateIsPlaying({
+            isPlaying: true,
+          });
+        }
+      }
+    }, [
+      audio,
+      isPlaying,
+      cancelNotification,
+      currentSong,
+      updateNotificationWithImage,
+      updateMusicControls,
+    ]);
+  
+    const refreshStream = useCallback(() => {
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.src = audio.src;
+        audio.play().catch((err) => {
+          console.error("Playback failed:", err);
+        });
+        setIsPlaying(true);
+      }
+    }, [audio]);
+  
     // Fetch current song data
     const fetchCurrentSong = useCallback(async () => {
-      console.log("Fetching current song...");
-  
       try {
         const response = await fetch(
           "https://entasiradio.tuc.gr/ftp/identifier/now_playing.xml"
@@ -59,89 +202,50 @@ import {
           link: xmlDoc.getElementsByTagName("link")[0]?.textContent || "",
         };
   
-        console.log("Fetched song data:", newSong);
-  
         if (
           !previousSongRef.current ||
           previousSongRef.current.name !== newSong.name
         ) {
-          console.log("New song detected:", newSong.name);
           setCurrentSong(newSong);
-  
-          // Only update notifications if the audio is playing
           if (isPlaying) {
-            console.log("Audio is playing, updating notification");
-            try {
-              await updateNotificationWithImage(
-                newSong.name,
-                newSong.artists,
-                newSong.album,
-                newSong.image
-              );
-            } catch (error) {
-              console.error("Error updating notification:", error);
-            }
+            updateNotificationWithImage(
+              newSong.name,
+              newSong.artists,
+              newSong.album,
+              newSong.image
+            );
+            updateMusicControls(newSong);
           }
           previousSongRef.current = newSong;
           setError(false);
-        } else {
-          console.log("Song is the same, no notification needed");
         }
       } catch (error) {
-        console.error("Error fetching song:", error);
+        console.log(error);
         setError(true);
         setCurrentSong(null);
       }
-    }, [isPlaying, updateNotificationWithImage]);
+    }, [isPlaying, updateNotificationWithImage, updateMusicControls]);
   
-    // Call fetchCurrentSong inside useEffect to fix the unused variable issue
     useEffect(() => {
-      fetchCurrentSong();
+      const fetchSongData = async () => {
+        await fetchCurrentSong();
+      };
+      fetchSongData();
   
-      const interval = setInterval(fetchCurrentSong, 10000); // Fetch song data every 10 seconds
-      return () => clearInterval(interval); // Cleanup on unmount
+      const interval = setInterval(fetchSongData, 10000);
+      return () => clearInterval(interval);
     }, [fetchCurrentSong]);
   
-    // Initialize audio globally
     useEffect(() => {
       if (typeof window !== "undefined") {
         const newAudio = new Audio("https://entasistream.tuc.gr:8000/main.mp3");
         setAudio(newAudio);
   
-        // Cleanup on unmount
         return () => {
           newAudio.pause();
         };
       }
     }, []);
-  
-    // Play or pause audio
-    const togglePlay = () => {
-      if (audio) {
-        if (isPlaying) {
-          audio.pause();
-          setIsPlaying(false);
-          cancelNotification();
-        } else {
-          audio.play().catch((err) => {
-            console.error("Playback failed:", err);
-          });
-          setIsPlaying(true);
-        }
-      }
-    };
-  
-    const refreshStream = () => {
-      if (audio) {
-        audio.pause();
-        audio.currentTime = 0;
-        audio.src = audio.src; // Reload the audio source
-        audio.play().catch((err) => {
-          console.error("Playback failed:", err);
-        });
-        setIsPlaying(true);
-      }
-    };
   
     return (
       <SongContext.Provider

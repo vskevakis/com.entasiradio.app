@@ -8,6 +8,8 @@ PODS:
     - Capacitor
   - CapacitorLocalNotifications (6.1.0):
     - Capacitor
+  - CapacitorMusicControlsPlugin (6.0.1):
+    - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
@@ -15,6 +17,7 @@ DEPENDENCIES:
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
   - "CapacitorLocalNotifications (from `../../node_modules/@capacitor/local-notifications`)"
+  - CapacitorMusicControlsPlugin (from `../../node_modules/capacitor-music-controls-plugin`)
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -27,6 +30,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/filesystem"
   CapacitorLocalNotifications:
     :path: "../../node_modules/@capacitor/local-notifications"
+  CapacitorMusicControlsPlugin:
+    :path: "../../node_modules/capacitor-music-controls-plugin"
 
 SPEC CHECKSUMS:
   Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
@@ -34,7 +39,8 @@ SPEC CHECKSUMS:
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
   CapacitorFilesystem: 37fb3aa5c945b4539ab11c74a5c57925a302bf24
   CapacitorLocalNotifications: 6bac9e948b2b8852506c6d74abb2cde140250f86
+  CapacitorMusicControlsPlugin: 266067a13417f634a59bbc0fb0e0ce40d73d144e
 
-PODFILE CHECKSUM: 82b9efa2669830565acc914075a5306fb4888061
+PODFILE CHECKSUM: 8929c70a8adc59a8de515400cfe413a445ea8b25
 
 COCOAPODS: 1.15.2

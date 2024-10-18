@@ -7,7 +7,7 @@ import ErrorFallback from './ErrorFallback';
 import SongDetails from './SongDetails'; // Import the component to show song details
 
 const MainComponent = () => {
-  const { currentSong, error, isPlaying, togglePlay, refreshStream, audio, setIsPlaying } = useSongContext(); // Fetch song data including currentSong and isPlaying state
+  const { currentSong, isPlaying, togglePlay, refreshStream, audio, setIsPlaying, error } = useSongContext(); // Fetch song data including currentSong and isPlaying state
 
   useEffect(() => {
     if (audio) {
