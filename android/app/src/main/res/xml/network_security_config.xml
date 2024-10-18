@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">entasistream.tuc.gr</domain>
+        <domain includeSubdomains="true">147.27.23.66</domain>
+        <domain includeSubdomains="true">147.27.121.200</domain>
+        <domain includeSubdomains="true">i.scdn.co</domain>
+    </domain-config>
+</network-security-config>

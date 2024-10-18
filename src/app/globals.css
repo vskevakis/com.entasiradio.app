@@ -25,3 +25,22 @@ body {
     text-wrap: balance;
   }
 }
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+body {
+  padding-top: env(safe-area-inset-top); /* Use this for devices with a notch */
+}
