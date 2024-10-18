@@ -22,6 +22,7 @@
     "flowbite-react": "^0.10.2",
     "framer-motion": "^11.11.9",
     "heroicons": "^2.1.5",
+    "ioredis": "^5.4.1",
     "next": "14.2.15",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@capacitor/cli": "^6.1.2",
     "@iconify/react": "^5.0.2",
+    "@types/ioredis": "^4.28.10",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
