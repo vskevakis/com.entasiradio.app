@@ -1,6 +1,8 @@
 PODS:
   - Capacitor (6.1.2):
     - CapacitorCordova
+  - CapacitorBrowser (6.0.3):
+    - Capacitor
   - CapacitorCommunityHttp (1.4.1):
     - Capacitor
   - CapacitorCordova (6.1.2)
@@ -13,6 +15,7 @@ PODS:
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorBrowser (from `../../node_modules/@capacitor/browser`)"
   - "CapacitorCommunityHttp (from `../../node_modules/@capacitor-community/http`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
@@ -22,6 +25,8 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorBrowser:
+    :path: "../../node_modules/@capacitor/browser"
   CapacitorCommunityHttp:
     :path: "../../node_modules/@capacitor-community/http"
   CapacitorCordova:
@@ -35,12 +40,13 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
+  CapacitorBrowser: aab1ed943b01c0365c4810538a8b3477e2d9f72e
   CapacitorCommunityHttp: 7be90668527ef14ee10d08135b0e00fac9cf8247
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
   CapacitorFilesystem: 37fb3aa5c945b4539ab11c74a5c57925a302bf24
   CapacitorLocalNotifications: 6bac9e948b2b8852506c6d74abb2cde140250f86
   CapacitorMusicControlsPlugin: 266067a13417f634a59bbc0fb0e0ce40d73d144e
 
-PODFILE CHECKSUM: 8929c70a8adc59a8de515400cfe413a445ea8b25
+PODFILE CHECKSUM: 42773530283d276c79dbd6d48d67457e3fbdaabb
 
 COCOAPODS: 1.15.2
