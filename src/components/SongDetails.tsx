@@ -58,8 +58,8 @@ const SongDetails: React.FC<SongDetailsProps> = ({ song, isLoading }) => {
           <div className="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-40 mx-auto"></div>
         </motion.div>
       ) : (
-        <AnimatePresence>
-          <motion.div key={song?.name} {...scaleUp}>
+        <AnimatePresence mode="wait">
+          <motion.div key={song?.name} {...scaleUp} exit={{ opacity: 0, scale: 0.9 }}>
             <div className="flex items-center justify-center w-full h-auto aspect-square mx-auto mb-4">
               <Image
                 src={song?.image || '/placeholder.jpg'}
