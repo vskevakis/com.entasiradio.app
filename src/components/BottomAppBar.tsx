@@ -10,7 +10,7 @@ const BottomAppBar = () => {
     return (
         <div className="fixed bottom-0 left-0 w-full bg-black p-4 z-[9999] flex justify-around items-center shadow-lg">
             {/* Home Button */}
-            <Link href="/" className="flex flex-col items-center justify-center space-y-1">
+            <Link href="/" className="flex flex-col items-center justify-center space-y-1 text-center w-16">
                 <Icon
                     icon="iconamoon:home-fill"
                     className={`h-6 w-6 ${pathname === '/' ? 'text-purple-400' : 'text-gray-400'}`} // Active color: purple, Inactive: gray
@@ -21,10 +21,10 @@ const BottomAppBar = () => {
             </Link>
 
             {/* Divider */}
-            <div className="h-6 border-l border-gray-600 p-0 m-0"></div>
+            <div className="h-6 border-l border-gray-600"></div>
 
             {/* Chat Button */}
-            <Link href="/chat" className="flex flex-col items-center justify-center space-y-1">
+            <Link href="/chat" className="flex flex-col items-center justify-center space-y-1 text-center w-16">
                 <Icon
                     icon="lets-icons:chat-fill"
                     className={`h-6 w-6 ${pathname === '/chat' ? 'text-purple-400' : 'text-gray-400'}`} // Active color: purple, Inactive: gray

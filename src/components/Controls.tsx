@@ -10,11 +10,12 @@ const Controls = ({ isPlaying, togglePlay, refreshStream }: { isPlaying: boolean
             {/* Play/Pause Button with gradient matching 'Μουσική' (blue to cyan) */}
             <button
                 onClick={togglePlay}
-                // className="flex items-center justify-center bg-gradient-to-br from-blue-500 to-cyan-500 p-6 rounded-full shadow-lg hover:scale-105 transition-transform"
+                className="flex items-center justify-center p-6 hover:scale-105 transition-transform"
             >
                 <Icon 
-                    icon={isPlaying ? "mingcute:pause-line" : "solar:play-broken"} 
-                    className="h-12 w-12 text-white" 
+                    icon={isPlaying ? "akar-icons:pause" : "solar:play-linear"} 
+                    className={`h-12 w-12 ${isPlaying ? 'text-white' : ''}`} // Conditional color
+                    style={{ color: isPlaying ? undefined : '#F5EE25' }} // Apply hex color
                 />
             </button>
 
