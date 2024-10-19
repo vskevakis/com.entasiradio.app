@@ -1,5 +1,5 @@
 {
-  "name": "entasi-radio-app",
+  "name": "Entasi Radio",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -16,6 +16,7 @@
     "@capacitor/filesystem": "^6.0.1",
     "@capacitor/ios": "6.1.2",
     "@capacitor/local-notifications": "^6.1.0",
+    "@capgo/capacitor-updater": "^6.3.8",
     "@heroicons/react": "^2.1.5",
     "capacitor-music-controls-plugin": "^6.0.1",
     "flowbite": "^2.5.2",
