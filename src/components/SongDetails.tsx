@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fadeInOut } from '@/animations/fadeAnimation';
 import { scaleUp } from '@/animations/scaleUpAnimation';
+import { useSongContext } from '@/context/SongContext';
+import { splashEffect } from '@/animations/splashEffect';
 
 interface SongDetailsProps {
   song: {
@@ -16,6 +18,20 @@ interface SongDetailsProps {
 
 const SongDetails: React.FC<SongDetailsProps> = ({ song, isLoading }) => {
   const [isSmallHeight, setIsSmallHeight] = useState(false);
+  const { isPlaying } = useSongContext(); // Get playing state
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-height: 600px)');
+    
+    const handleChange = () => setIsSmallHeight(mediaQuery.matches);
+    
+    handleChange();
+    mediaQuery.addEventListener('change', handleChange);
+    
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-height: 600px)');
@@ -33,7 +49,8 @@ const SongDetails: React.FC<SongDetailsProps> = ({ song, isLoading }) => {
   return (
     <motion.div
       className="mx-8 p-6 md:p-10 rounded-3xl max-w-lg w-full shadow-lg border border-white border-opacity-30 bg-white bg-opacity-20 backdrop-blur-lg"
-      {...scaleUp}
+      animate={isPlaying ? "animate" : "initial"} // Trigger splash effect on play
+      variants={splashEffect} // Use the splashEffect animation
     >
       {isLoading ? (
         <motion.div role="status" className="animate-pulse" {...fadeInOut}>
@@ -82,5 +99,4 @@ const SongDetails: React.FC<SongDetailsProps> = ({ song, isLoading }) => {
     </motion.div>
   );
 };
-
 export default SongDetails;
