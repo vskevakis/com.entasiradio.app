@@ -7,33 +7,40 @@ export const useMusicControls = (
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>,
   cancelNotification: () => void
 ) => {
-  const handleControlsEvent = (message: string) => {
-    console.log("Handling media control event:", message);
+  const handleControlsEvent = useCallback(
+    (message: string) => {
+      console.log("Handling media control event:", message);
 
-    switch (message) {
-      case "music-controls-pause":
-        if (audio && isPlaying) {
-          audio.pause();
-          setIsPlaying(false);
-          CapacitorMusicControls.updateIsPlaying({ isPlaying: false });
-        }
-        break;
-      case "music-controls-play":
-        if (audio && !isPlaying) {
-          audio.play();
-          setIsPlaying(true);
-          CapacitorMusicControls.updateIsPlaying({ isPlaying: true });
-        }
-        break;
-      case "music-controls-destroy":
-        cancelNotification();
-        CapacitorMusicControls.destroy();
-        break;
-      default:
-        console.warn("Unknown media control action:", message);
-        break;
-    }
-  };
+      switch (message) {
+        case "music-controls-pause":
+          if (audio && isPlaying) {
+            audio.pause();
+            setIsPlaying(false);
+            CapacitorMusicControls.updateIsPlaying({ isPlaying: false });
+          }
+          break;
+        case "music-controls-play":
+          if (audio && !isPlaying) {
+            audio.currentTime = 0;
+            audio.src = audio.src;
+            audio.play().catch((err) => {
+              console.error("Playback failed:", err);
+            });
+            setIsPlaying(true);
+            CapacitorMusicControls.updateIsPlaying({ isPlaying: true });
+          }
+          break;
+        case "music-controls-destroy":
+          cancelNotification();
+          CapacitorMusicControls.destroy();
+          break;
+        default:
+          console.warn("Unknown media control action:", message);
+          break;
+      }
+    },
+    [audio, isPlaying, setIsPlaying, cancelNotification]
+  );
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   const updateMusicControls = useCallback(
@@ -62,7 +69,6 @@ export const useMusicControls = (
     },
     [isPlaying, handleControlsEvent]
   );
-  
 
   // Add Android media control listener
   useEffect(() => {
@@ -78,9 +84,12 @@ export const useMusicControls = (
 
     // Clean up the event listener when the component unmounts
     return () => {
-      document.removeEventListener("controlsNotification", androidControlHandler);
+      document.removeEventListener(
+        "controlsNotification",
+        androidControlHandler
+      );
     };
-  }, [handleControlsEvent]);
+  }, [audio, handleControlsEvent]);
   /* eslint-enable @typescript-eslint/no-explicit-any */
 
   return { handleControlsEvent, updateMusicControls };

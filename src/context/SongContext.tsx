@@ -88,6 +88,8 @@ import {
           cancelNotification();
           CapacitorMusicControls.updateIsPlaying({ isPlaying: false });
         } else {
+          audio.currentTime = 0;
+          audio.src = audio.src;
           audio.play().catch((err) => {
             console.error("Playback failed:", err);
           });
