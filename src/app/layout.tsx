@@ -7,20 +7,27 @@ import LayoutWrapper from '@/components/LayoutWrapper';
 import { SongProvider } from '@/context/SongContext';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-// import { motion, useAnimation } from 'framer-motion';
 import Head from 'next/head';
 import AnimatedBackground from '@/components/AnimatedBackground';
-// import { Capacitor } from '@capacitor/core';
 
 // Dynamically import ChatPage without SSR to preload it
 const ChatPage = dynamic(() => import('./chat/page'), { ssr: false });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [isChatLoaded, setIsChatLoaded] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false); // Track iframe load status
 
   useEffect(() => {
-    // Preload ChatPage once the app loads
-    setIsChatLoaded(true); 
+    // Preload the iframe once the app loads
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://minnit.chat/c/RadioEntasi?embed&&nickname=';
+    iframe.style.display = 'none'; // Hide the iframe initially
+    iframe.onload = () => setIframeLoaded(true); // Mark iframe as loaded once it's ready
+    document.body.appendChild(iframe);
+
+    // Cleanup on unmount
+    return () => {
+      document.body.removeChild(iframe);
+    };
   }, []);
 
   return (
@@ -36,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <LayoutWrapper>{children}</LayoutWrapper>
           </AnimatedBackground>
           <BottomAppBar />
-          {isChatLoaded && (
+          {iframeLoaded && (
             <div style={{ display: 'none' }}>
               <ChatPage />
             </div>
