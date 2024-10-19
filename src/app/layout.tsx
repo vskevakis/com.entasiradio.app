@@ -1,36 +1,48 @@
+// Import the version check function
 'use client';
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { Browser } from '@capacitor/browser';
 
 import './globals.css';
 import Header from '@/components/Header';
 import BottomAppBar from '@/components/BottomAppBar';
 import LayoutWrapper from '@/components/LayoutWrapper';
-import { SongProvider } from '@/context/SongContext'; // Import SongProvider to wrap the app
-import { Capacitor, Plugins } from '@capacitor/core';
+import { SongProvider } from '@/context/SongContext';
+import { Capacitor } from '@capacitor/core';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
+import { checkForUpdate } from '@/utils/versionCheck';
 
-// Dynamically import ChatPage without SSR to preload it
+export const setupNotificationListeners = () => {
+  LocalNotifications.addListener('localNotificationActionPerformed', async (notification) => {
+    console.log('Notification clicked:', notification); // Log to check interaction
+    if (notification.notification.actionTypeId === 'DOWNLOAD_APK') {
+      console.log(notification.notification.attachments)
+      const apkUrl = notification.notification.attachments?.find(att => att.id === 'apk-url')?.url;
+      if (apkUrl) {
+        console.log('Opening APK URL:', apkUrl); // Log to confirm URL
+        await Browser.open({ url: apkUrl });
+      }
+    }
+  });
+};
+
 const ChatPage = dynamic(() => import('./chat/page'), { ssr: false });
-
-const { BackgroundTask } = Plugins;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [isChatLoaded, setIsChatLoaded] = useState(false);
 
   useEffect(() => {
     // Preload ChatPage once the app loads
-    setIsChatLoaded(true); // This flag ensures that the chat page loads once the app starts
+    setIsChatLoaded(true); 
   }, []);
 
   useEffect(() => {
+    // Call the version check function on native platforms
     if (Capacitor.isNativePlatform()) {
-      if (BackgroundTask && typeof BackgroundTask.beforeExit === 'function') {
-        const taskId = BackgroundTask.beforeExit(async () => {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          BackgroundTask.finish({ taskId });
-        });
-      }
+      setupNotificationListeners();
+      checkForUpdate();
     }
   }, []);
 
@@ -50,8 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SongProvider>
           <Header />
           <LayoutWrapper>{children}</LayoutWrapper>
-          <BottomAppBar /> {/* Include the Bottom App Bar */}
-          {/* Preload Chat Page */}
+          <BottomAppBar />
           {isChatLoaded && (
             <div style={{ display: 'none' }}>
               <ChatPage />
@@ -62,3 +73,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+

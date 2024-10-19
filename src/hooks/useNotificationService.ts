@@ -1,5 +1,5 @@
-import { LocalNotifications } from '@capacitor/local-notifications';
-import { Filesystem, Directory } from '@capacitor/filesystem';
+import { LocalNotifications } from '@capacitor/local-notifications/dist/esm';
+import { Filesystem, Directory } from '@capacitor/filesystem/dist/esm';
 
 const downloadImageToCache = async (imageUrl: string) => {
   try {
