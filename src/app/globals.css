@@ -19,20 +19,24 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
 
+
 html,
 body {
+  height: 100%;
+}
+
+body {
+  padding-top: env(safe-area-inset-top); /* Use for devices with a notch */
   height: 100%;
   margin: 0;
   padding: 0;
 }
-
 .flex {
   display: flex;
 }
@@ -41,6 +45,3 @@ body {
   height: 100vh;
 }
 
-body {
-  padding-top: env(safe-area-inset-top); /* Use this for devices with a notch */
-}

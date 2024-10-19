@@ -1,17 +1,28 @@
 'use client';
 
 import './globals.css';
-import Header from '../components/Header';
-import BottomAppBar from '../components/BottomAppBar';
+import Header from '@/components/Header';
+import BottomAppBar from '@/components/BottomAppBar';
 import LayoutWrapper from '@/components/LayoutWrapper';
 import { SongProvider } from '@/context/SongContext'; // Import SongProvider to wrap the app
 import { Capacitor, Plugins } from '@capacitor/core';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
+
+// Dynamically import ChatPage without SSR to preload it
+const ChatPage = dynamic(() => import('./chat/page'), { ssr: false });
 
 const { BackgroundTask } = Plugins;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const [isChatLoaded, setIsChatLoaded] = useState(false);
+
+  useEffect(() => {
+    // Preload ChatPage once the app loads
+    setIsChatLoaded(true); // This flag ensures that the chat page loads once the app starts
+  }, []);
+
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
       if (BackgroundTask && typeof BackgroundTask.beforeExit === 'function') {
@@ -40,6 +51,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <LayoutWrapper>{children}</LayoutWrapper>
           <BottomAppBar /> {/* Include the Bottom App Bar */}
+          {/* Preload Chat Page */}
+          {isChatLoaded && (
+            <div style={{ display: 'none' }}>
+              <ChatPage />
+            </div>
+          )}
         </SongProvider>
       </body>
     </html>
