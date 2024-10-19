@@ -2,7 +2,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "com.entasiradio.app",
-  appName: "entasi-radio-app",
+  appName: "Entasi Radio",
   webDir: "out",
   bundledWebRuntime: false,
   plugins: {
