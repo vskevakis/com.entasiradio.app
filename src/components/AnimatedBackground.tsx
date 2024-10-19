@@ -4,22 +4,22 @@ import React, { useEffect } from 'react';
 
 const backgroundVariants = {
     idle: {
-      background:
-        'radial-gradient(circle, rgba(90,0,130,1) 36%, rgba(168,14,205,1) 60%, rgba(34,34,34,1) 100%)',
-      transition: {
-        duration: 1,
-      },
+        background:
+            'radial-gradient(circle, rgba(70,0,100,1) 36%, rgba(140,10,170,1) 60%, rgba(20,20,20,1) 100%)',
+        transition: {
+            duration: 1,
+        },
     },
     playing: {
-      background:
-        'radial-gradient(circle, rgba(110,10,160,1) 36%, rgba(200,30,240,1) 60%, rgba(34,34,34,1) 100%)',
-      transition: {
-        duration: 1,
-        repeat: Infinity,
-        repeatType: 'mirror' as const,
-      },
+        background:
+            'radial-gradient(circle, rgba(130,20,190,1) 36%, rgba(220,50,255,1) 60%, rgba(50,50,50,1) 100%)',
+        transition: {
+            duration: 3,
+            repeat: Infinity,
+            repeatType: 'mirror' as const,
+        },
     },
-  };
+};
 
 const AnimatedBackground: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isPlaying } = useSongContext();
