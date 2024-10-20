@@ -5,7 +5,6 @@ export const useMusicControls = (
   audio: HTMLAudioElement | null,
   isPlaying: boolean,
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>,
-  cancelNotification: () => void
 ) => {
   const handleControlsEvent = useCallback(
     (message: string) => {
@@ -31,7 +30,6 @@ export const useMusicControls = (
           }
           break;
         case "music-controls-destroy":
-          cancelNotification();
           CapacitorMusicControls.destroy();
           break;
         default:
@@ -39,7 +37,7 @@ export const useMusicControls = (
           break;
       }
     },
-    [audio, isPlaying, setIsPlaying, cancelNotification]
+    [audio, isPlaying, setIsPlaying]
   );
 
   /* eslint-disable @typescript-eslint/no-explicit-any */

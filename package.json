@@ -1,6 +1,6 @@
 {
   "name": "Entasi Radio",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -17,8 +17,10 @@
     "@capacitor/filesystem": "^6.0.1",
     "@capacitor/ios": "6.1.2",
     "@capacitor/local-notifications": "^6.1.0",
+    "@capacitor/push-notifications": "^6.0.2",
     "@heroicons/react": "^2.1.5",
     "capacitor-music-controls-plugin": "^6.0.1",
+    "firebase": "^10.14.1",
     "flowbite": "^2.5.2",
     "flowbite-react": "^0.10.2",
     "framer-motion": "^11.11.9",

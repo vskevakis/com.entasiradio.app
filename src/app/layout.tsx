@@ -9,12 +9,24 @@ import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import AnimatedBackground from '@/components/AnimatedBackground';
+import initPushNotifications from '@/hooks/usePushNotifications';
+import { createNotificationChannel } from '@/hooks/getNotificationService';
+
 
 // Dynamically import ChatPage without SSR to preload it
 const ChatPage = dynamic(() => import('./chat/page'), { ssr: false });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [iframeLoaded, setIframeLoaded] = useState(false); // Track iframe load status
+
+  useEffect(() => {
+    const initializeNotifications = async () => {
+      await createNotificationChannel(); // Ensure the channel is created
+      await initPushNotifications(); // Initialize push notifications
+    };
+
+    initializeNotifications();
+  }, []);
 
   useEffect(() => {
     // Preload the iframe once the app loads

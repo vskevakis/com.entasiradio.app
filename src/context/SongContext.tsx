@@ -6,7 +6,6 @@ import {
     useCallback,
     useEffect,
   } from "react";
-  import { useNotificationService } from "@/hooks/useNotificationService";
   import { useWebSocket } from "@/hooks/useWebSocket";
   import { useMusicControls } from "@/hooks/useMusicControls";
   import { CapacitorMusicControls } from "capacitor-music-controls-plugin";
@@ -32,7 +31,6 @@ import {
   const SongContext = createContext<SongContextType | undefined>(undefined);
   
   export const SongProvider = ({ children }: { children: React.ReactNode }) => {
-    const { updateNotificationWithImage, cancelNotification } = useNotificationService();
     const [currentSong, setCurrentSong] = useState<Song | null>(null);
     const [error, setError] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -40,7 +38,7 @@ import {
     const previousSongRef = useRef<Song | null>(null);
   
     // Media controls hook - This must come before using updateMusicControls
-    const { updateMusicControls } = useMusicControls(audio, isPlaying, setIsPlaying, cancelNotification);
+    const { updateMusicControls } = useMusicControls(audio, isPlaying, setIsPlaying);
     /* eslint-disable @typescript-eslint/no-explicit-any */
 
     // Handle WebSocket song data
@@ -60,7 +58,6 @@ import {
           if (!previousSongRef.current || previousSongRef.current.name !== newSong.name) {
             setCurrentSong(newSong);
             if (isPlaying) {
-              updateNotificationWithImage(newSong.name, newSong.artists, newSong.album, newSong.image);
               updateMusicControls(newSong);
             }
             previousSongRef.current = newSong;
@@ -72,7 +69,7 @@ import {
           setCurrentSong(null);
         }
       },
-      [isPlaying, updateNotificationWithImage, updateMusicControls]
+      [isPlaying, updateMusicControls]
     );
     /* eslint-enable @typescript-eslint/no-explicit-any */
 
@@ -85,7 +82,6 @@ import {
         if (isPlaying) {
           audio.pause();
           setIsPlaying(false);
-          cancelNotification();
           CapacitorMusicControls.updateIsPlaying({ isPlaying: false });
         } else {
           audio.currentTime = 0;
@@ -96,13 +92,12 @@ import {
           setIsPlaying(true);
   
           if (currentSong) {
-            updateNotificationWithImage(currentSong.name, currentSong.artists, currentSong.album, currentSong.image);
             updateMusicControls(currentSong);
           }
           CapacitorMusicControls.updateIsPlaying({ isPlaying: true });
         }
       }
-    }, [audio, isPlaying, cancelNotification, currentSong, updateNotificationWithImage, updateMusicControls]);
+    }, [audio, isPlaying, currentSong, updateMusicControls]);
   
     const refreshStream = useCallback(() => {
       if (audio) {
