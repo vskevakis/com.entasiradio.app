@@ -7,31 +7,25 @@ const ChatPage = () => {
   const pathname = usePathname(); // Detects the current path
 
   useEffect(() => {
-    // Get the preloaded iframe and cast it to HTMLIFrameElement
-    const iframe = document.querySelector('iframe[src*="https://minnit.chat/c/RadioEntasi"]') as HTMLIFrameElement;
-    
-    if (iframe) {
-      if (pathname === '/chat') {
-        // Show the iframe only when the user navigates to /chat
-        iframe.style.display = 'block';
-        iframe.style.position = 'absolute'; // Fullscreen positioning
-        iframe.style.top = '0';
-        iframe.style.left = '0';
-        iframe.style.width = '100%';
-        iframe.style.height = 'calc(100% - 64px)';
-        iframe.style.border = 'none'; // No border
-        setIframeElement(iframe);
-      } else {
-        // Hide the iframe when not on the chat page
-        iframe.style.display = 'none';
-      }
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://minnit.chat/c/RadioEntasi?embed&&nickname=';
+    iframe.style.position = 'absolute'; // Fullscreen positioning
+    iframe.style.top = '0';
+    iframe.style.left = '0';
+    iframe.style.width = '100%';
+    iframe.style.height = 'calc(100% - 64px)';
+    iframe.style.border = 'none'; // No border
+
+    if (pathname === '/chat') {
+      document.body.appendChild(iframe); // Add iframe to the body if on /chat
+      setIframeElement(iframe);
     }
 
     return () => {
-      // Optionally hide the iframe when leaving the chat page
-      if (iframe) iframe.style.display = 'none';
+      // Cleanup iframe on unmount or when pathname changes
+      if (iframe) document.body.removeChild(iframe);
     };
-  }, [pathname]); // Depend on the current path to control iframe visibility
+  }, [pathname]);
 
   return (
     <div className="relative flex justify-center items-center h-screen w-screen">
